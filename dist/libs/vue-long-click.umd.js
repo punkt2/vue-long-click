@@ -1136,20 +1136,23 @@ var es6_function_name = __webpack_require__("7f7f");
           pressTimer = setTimeout(function () {
             if (interval && interval > 0) {
               pressInterval = setInterval(function () {
-                handler();
+                handler(e);
               }, interval);
             }
 
-            handler();
+            handler(e);
+            pressTimer = null;
           }, delay);
         }
       }; // Cancel Timeout
 
 
-      var cancel = function cancel() {
+      var cancel = function cancel(e) {
         if (pressTimer !== null) {
           clearTimeout(pressTimer);
           pressTimer = null;
+        } else {
+          e.preventDefault();
         }
 
         if (pressInterval) {
@@ -1164,10 +1167,14 @@ var es6_function_name = __webpack_require__("7f7f");
       };
 
       ['mousedown', 'touchstart'].forEach(function (e) {
-        return el.addEventListener(e, start);
+        el.addEventListener(e, start, {
+          passive: false
+        });
       });
-      ['click', 'mouseout', 'touchend', 'touchcancel'].forEach(function (e) {
-        return el.addEventListener(e, cancel);
+      ['click', 'contextmenu', 'mouseout', 'touchend', 'touchcancel'].forEach(function (e) {
+        el.addEventListener(e, cancel, {
+          passive: false
+        });
       });
     }
   };

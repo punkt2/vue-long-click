@@ -23,15 +23,18 @@ export default ({delay = 400, interval = 50}) => ({
             }, interval)
           }
           handler(e)
+          pressTimer = null
         }, delay)
       }
     }
 
     // Cancel Timeout
-    const cancel = () => {
+    const cancel = (e) => {
       if (pressTimer !== null) {
         clearTimeout(pressTimer)
         pressTimer = null
+      } else {
+        e.preventDefault()
       }
       if (pressInterval) {
         clearInterval(pressInterval)
@@ -44,11 +47,11 @@ export default ({delay = 400, interval = 50}) => ({
     }
 
     ;['mousedown', 'touchstart'].forEach(e => {
-      el.addEventListener(e, start, { passive: true })
+      el.addEventListener(e, start, { passive: false })
     })
 
-    ;['click', 'mouseout', 'touchend', 'touchcancel'].forEach(e => {
-      el.addEventListener(e, cancel, { passive: true })
+    ;['click', 'contextmenu', 'mouseout', 'touchend', 'touchcancel'].forEach(e => {
+      el.addEventListener(e, cancel, { passive: false })
     })
   }
 })
